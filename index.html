@@ -997,6 +997,37 @@
     </div>
   </div>
 
+  <!-- GLB UPLOAD OVERLAY -->
+  <div id="glb-upload-overlay" style="
+    position:fixed; inset:0; z-index:9999;
+    background:#0a0a0a;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:24px;
+    font-family:'Inter',sans-serif;
+  ">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#c8a96e;margin-bottom:8px;">Turbo 930 / Archive</div>
+    <div id="glb-drop-zone" style="
+      border:1px solid rgba(200,169,110,0.35);
+      padding:48px 64px;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color 0.3s, background 0.3s;
+      max-width:420px; width:90%;
+    ">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;text-transform:uppercase;color:#f0ede8;margin-bottom:12px;letter-spacing:-0.01em;">Load 3D Model</div>
+      <div style="font-size:12px;color:#888;letter-spacing:0.08em;margin-bottom:24px;line-height:1.7;">Drop your <span style="color:#c8a96e;">.glb</span> file here<br>or click to browse</div>
+      <input type="file" id="glb-file-input" accept=".glb,.gltf" style="display:none">
+      <button onclick="document.getElementById('glb-file-input').click()" style="
+        background:none; border:1px solid rgba(240,237,232,0.25);
+        color:#f0ede8; font-family:'Inter',sans-serif;
+        font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+        padding:10px 28px; cursor:pointer; transition:background 0.3s,border-color 0.3s;
+      " onmouseover="this.style.background='rgba(240,237,232,0.08)'" onmouseout="this.style.background='none'">Select File</button>
+    </div>
+    <div id="glb-load-status" style="font-size:11px;color:#888;letter-spacing:0.12em;min-height:18px;"></div>
+  </div>
+
   <!-- THREE.JS CANVAS -->
   <div id="canvas-wrapper">
     <canvas id="three-canvas"></canvas>
@@ -1213,20 +1244,15 @@
     let car = null;
     let carLoaded = false;
 
-    const modelData = window.UPLOADED_3D_MODELS?.find(m => m.name === 'porsche-compressed-2.glb');
-
-    // Start HDR and model loading immediately — no deferral
-    loadHDR();
-    if (modelData) {
+    function loadGLBFromArrayBuffer(arrayBuffer) {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
       const loader = new GLTFLoader();
       loader.setDRACOLoader(dracoLoader);
 
-      loader.load(modelData.dataUrl, (gltf) => {
+      loader.parse(arrayBuffer, '', (gltf) => {
         car = gltf.scene;
 
-        // Auto-center and scale
         const box = new THREE.Box3().setFromObject(car);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
@@ -1239,22 +1265,66 @@
         car.position.z = -center.z * scale;
 
         car.traverse(child => {
-          if (child.isMesh) {
-
-            // Reduce material complexity on non-visible/small meshes
-            if (child.material) {
-              const mats = Array.isArray(child.material) ? child.material : [child.material];
-              mats.forEach(m => {
-                m.envMapIntensity = sceneValues.hdrIntensity;
-              });
-            }
+          if (child.isMesh && child.material) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(m => { m.envMapIntensity = sceneValues.hdrIntensity; });
           }
         });
 
         scene.add(car);
         carLoaded = true;
+
+        // Hide overlay, show scene
+        document.getElementById('glb-upload-overlay').style.display = 'none';
+      }, (err) => {
+        document.getElementById('glb-load-status').textContent = 'Error loading model. Try another GLB file.';
+        document.getElementById('glb-load-status').style.color = '#e05a5a';
+        console.error(err);
       });
     }
+
+    // File input handler
+    const glbInput = document.getElementById('glb-file-input');
+    glbInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('glb-load-status').textContent = 'Loading model…';
+      document.getElementById('glb-load-status').style.color = '#c8a96e';
+      const reader = new FileReader();
+      reader.onload = (ev) => loadGLBFromArrayBuffer(ev.target.result);
+      reader.readAsArrayBuffer(file);
+    });
+
+    // Drag-and-drop on the drop zone
+    const dropZone = document.getElementById('glb-drop-zone');
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#c8a96e';
+      dropZone.style.background = 'rgba(200,169,110,0.05)';
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = 'rgba(200,169,110,0.35)';
+      dropZone.style.background = 'none';
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'rgba(200,169,110,0.35)';
+      dropZone.style.background = 'none';
+      const file = e.dataTransfer.files[0];
+      if (!file || (!file.name.endsWith('.glb') && !file.name.endsWith('.gltf'))) {
+        document.getElementById('glb-load-status').textContent = 'Please drop a .glb or .gltf file.';
+        document.getElementById('glb-load-status').style.color = '#e05a5a';
+        return;
+      }
+      document.getElementById('glb-load-status').textContent = 'Loading model…';
+      document.getElementById('glb-load-status').style.color = '#c8a96e';
+      const reader = new FileReader();
+      reader.onload = (ev) => loadGLBFromArrayBuffer(ev.target.result);
+      reader.readAsArrayBuffer(file);
+    });
+
+    // Start HDR loading immediately in background
+    loadHDR();
 
     // SETTINGS PANEL LOGIC
     const sectionNames = ['Hero', 'Overview', 'Specs', 'Features', 'Quote', 'CTA'];
