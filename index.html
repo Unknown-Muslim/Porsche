@@ -900,6 +900,60 @@
       border-bottom: 1px solid rgba(200,169,110,0.2);
     }
 
+    /* ENTRANCE ANIMATIONS */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+    .reveal-delay-4 { transition-delay: 0.5s; }
+
+    /* Typewriter cursor */
+    .typewriter::after {
+      content: '|';
+      color: var(--accent);
+      animation: blink 0.75s step-end infinite;
+      margin-left: 1px;
+    }
+    .typewriter.done::after { display: none; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Stat counter */
+    .stat-val {
+      display: inline-block;
+      transition: color 0.3s;
+    }
+    .stat-val.counting { color: var(--accent); }
+
+    /* Specs list items stagger */
+    .specs-list li {
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .specs-list li.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Feature items */
+    .feature-item {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .feature-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* PROGRESS BAR */
     .scroll-progress {
       position: fixed;
@@ -1028,22 +1082,22 @@
     <!-- OVERVIEW -->
     <section class="section" id="section-overview">
       <div class="overview-content">
-        <div class="section-tag">Overview</div>
-        <h2 class="section-title">Born to<br>Dominate</h2>
-        <p class="section-body">
+        <div class="section-tag reveal">Overview</div>
+        <h2 class="section-title reveal reveal-delay-1" id="typewriter-overview">Born to<br>Dominate</h2>
+        <p class="section-body reveal reveal-delay-2">
           The 1975 Porsche 911 Turbo — internally designated the 930 — arrived as a thunderclap. The first production turbocharged Porsche ever offered, it redefined what a sports car could be and cemented an era of performance mythology that still echoes today.
         </p>
-        <div class="stat-row">
+        <div class="stat-row reveal reveal-delay-3">
           <div class="stat">
-            <span class="stat-val">260</span>
+            <span class="stat-val" data-count="260" data-suffix="">260</span>
             <span class="stat-label">Horsepower</span>
           </div>
           <div class="stat">
-            <span class="stat-val">5.5s</span>
+            <span class="stat-val" data-count="5.5" data-suffix="s" data-decimals="1">5.5s</span>
             <span class="stat-label">0–60 mph</span>
           </div>
           <div class="stat">
-            <span class="stat-val">155</span>
+            <span class="stat-val" data-count="155" data-suffix="">155</span>
             <span class="stat-label">Top mph</span>
           </div>
         </div>
@@ -1053,8 +1107,8 @@
     <!-- SPECS -->
     <section class="section" id="section-specs">
       <div class="specs-content">
-        <div class="section-tag" style="justify-content: flex-end;">Technical</div>
-        <h2 class="section-title">Specs &<br>Numbers</h2>
+        <div class="section-tag reveal" style="justify-content: flex-end;">Technical</div>
+        <h2 class="section-title reveal reveal-delay-1">Specs &<br>Numbers</h2>
         <ul class="specs-list">
           <li><span class="spec-name">Engine</span><span class="spec-val">3.0L Flat-6 Turbo</span></li>
           <li><span class="spec-name">Displacement</span><span class="spec-val">2994 cc</span></li>
@@ -1070,8 +1124,8 @@
     <!-- FEATURES -->
     <section class="section" id="section-features">
       <div>
-        <div class="section-tag">Design</div>
-        <h2 class="section-title">Iconic<br>Details</h2>
+        <div class="section-tag reveal">Design</div>
+        <h2 class="section-title reveal reveal-delay-1">Iconic<br>Details</h2>
         <div class="features-grid">
           <div class="feature-item">
             <div class="feature-num">01</div>
@@ -1099,20 +1153,20 @@
 
     <!-- QUOTE -->
     <section class="section" id="section-quote">
-      <div class="quote-mark">"</div>
-      <p class="quote-text">It is not a car for the faint-hearted — but for those who master it, nothing else will do</p>
-      <p class="quote-attr"><strong>Turbo 930 Archive</strong> — Editorial, 1976</p>
+      <div class="quote-mark reveal">"</div>
+      <p class="quote-text reveal reveal-delay-1" id="typewriter-quote">It is not a car for the faint-hearted — but for those who master it, nothing else will do</p>
+      <p class="quote-attr reveal reveal-delay-2"><strong>Turbo 930 Archive</strong> — Editorial, 1976</p>
     </section>
 
     <!-- CTA -->
     <section class="section" id="section-cta">
       <div class="cta-content">
-        <p class="cta-label">Own the Legend</p>
-        <h2 class="cta-headline">
+        <p class="cta-label reveal">Own the Legend</p>
+        <h2 class="cta-headline reveal reveal-delay-1">
           <span class="line">Acquire</span>
           <span class="line stroke">Yours</span>
         </h2>
-        <div class="cta-bottom">
+        <div class="cta-bottom reveal reveal-delay-2">
           <a href="#" class="cta-btn">
             Begin Enquiry
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -1122,7 +1176,7 @@
           <div class="footer-copy">
             <p>Turbo 930 Archive</p>
             <p>All rights reserved</p>
-            <p> Made by Unknown Muslim</p>
+            <p>Made by Unknown Muslim</p>
           </div>
         </div>
       </div>
@@ -1706,6 +1760,142 @@
 
       renderer.render(scene, camera);
     }
+
+    // ── ENTRANCE ANIMATIONS ──────────────────────────────────────────────
+
+    // 1. Generic reveal (fade + slide up)
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // 2. Specs list — stagger each row
+    const specsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const items = e.target.querySelectorAll('li');
+          items.forEach((li, i) => {
+            setTimeout(() => li.classList.add('visible'), 120 + i * 80);
+          });
+          specsObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    const specsList = document.querySelector('.specs-list');
+    if (specsList) specsObserver.observe(specsList);
+
+    // 3. Feature cards — stagger
+    const featObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const items = e.target.querySelectorAll('.feature-item');
+          items.forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), 80 + i * 120);
+          });
+          featObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    const featGrid = document.querySelector('.features-grid');
+    if (featGrid) featObserver.observe(featGrid);
+
+    // 4. Counter animation
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const decimals = parseInt(el.dataset.decimals || '0');
+      const duration = 1400;
+      const start = performance.now();
+      el.classList.add('counting');
+
+      function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // ease out expo
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const val = eased * target;
+        el.textContent = (decimals > 0 ? val.toFixed(decimals) : Math.floor(val)) + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = (decimals > 0 ? target.toFixed(decimals) : target) + suffix;
+          el.classList.remove('counting');
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.stat-val[data-count]').forEach(animateCounter);
+          statObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const statRow = document.querySelector('.stat-row');
+    if (statRow) statObserver.observe(statRow);
+
+    // 5. Typewriter effect
+    function typewriter(el, text, speedMs = 28) {
+      el.classList.add('typewriter');
+      // preserve any inner HTML structure (e.g. <br>) — work on textContent only for simplicity
+      // Split on <br> so we keep line breaks
+      const parts = text.split('<br>');
+      el.innerHTML = '';
+      let partIdx = 0, charIdx = 0;
+
+      function tick() {
+        if (partIdx >= parts.length) {
+          el.classList.add('done');
+          return;
+        }
+        if (charIdx < parts[partIdx].length) {
+          // rebuild innerHTML with typed chars + remaining parts hidden
+          let html = '';
+          for (let p = 0; p < partIdx; p++) html += parts[p] + '<br>';
+          html += parts[partIdx].slice(0, charIdx + 1);
+          el.innerHTML = html;
+          charIdx++;
+          setTimeout(tick, speedMs);
+        } else {
+          partIdx++;
+          charIdx = 0;
+          if (partIdx < parts.length) {
+            el.innerHTML += '<br>';
+            setTimeout(tick, speedMs * 3);
+          } else {
+            el.classList.add('done');
+          }
+        }
+      }
+      tick();
+    }
+
+    // Map element id → original text with <br> markers
+    const typewriterTargets = {
+      'typewriter-quote': 'It is not a car for the faint-hearted — but for those who master it, nothing else will do'
+    };
+
+    const twObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const text = typewriterTargets[e.target.id];
+          if (text) typewriter(e.target, text, 22);
+          twObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    Object.keys(typewriterTargets).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) twObserver.observe(el);
+    });
 
     tick();
 
